@@ -108,8 +108,6 @@ def histogrammer(theData):
 ### 1. read data
 ### 2. normalizations
 ### 3. plot original and nomalized distributions
-### 4. visualize samples umap
-### 4. visualize samples heatmap
 ### 4. store data
 
 # 0. user defined variables
@@ -298,13 +296,6 @@ matplotlib.pyplot.tight_layout()
 matplotlib.pyplot.savefig(resultsFolder+'figure.expression.sklearn.pdf')
 matplotlib.pyplot.clf()
 
-# 4. visualize samples
-
-
-
-sys.exit()
-
-
 # 4. store data into csv
 print('storing...')
 
@@ -349,25 +340,6 @@ with open(fileName,'w') as f:
         
         f.write('\n')
 
-# store full
-sampleNames=list(fullSet.keys())
-sampleNames.sort()
-geneNames=list(fullSet[sampleNames[0]].keys())
-geneNames.sort()
-
-fileName=resultsFolder+'full.data.csv'
-with open(fileName,'w') as f:
-    header='geneID,'+','.join(sampleNames)
-    f.write(header)
-    f.write('\n')
-    
-    for geneName in geneNames:
-        f.write(geneName)
-
-        for sampleName in sampleNames:
-            f.write(',{}'.format(fullSet[sampleName][geneName]))
-        
-        f.write('\n')
 
 # 3.2. store QN data sets
 # store MA
@@ -409,23 +381,5 @@ with open(fileName,'w') as f:
             f.write(',{}'.format(QNRS[sampleName][geneName]))
         
         f.write('\n')
-
-# store full
-sampleNames=list(QNF.keys())
-sampleNames.sort()
-geneNames=list(QNF[sampleNames[0]].keys())
-geneNames.sort()
-
-fileName=resultsFolder+'QN.full.data.csv'
-with open(fileName,'w') as f:
-    header='geneID,'+','.join(sampleNames)
-    f.write(header)
-    f.write('\n')
-    
-    for geneName in geneNames:
-        f.write(geneName)
-
-        for sampleName in sampleNames:
-            f.write(',{}'.format(QNF[sampleName][geneName]))
         
-        f.write('\n')
+# store RS sklearn

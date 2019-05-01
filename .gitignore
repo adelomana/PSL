@@ -4,3 +4,15 @@
 *.csv
 demo/.ipynb_checkpoints/single.cell.demo-checkpoint.ipynb
 GBM/.DS_Store
+*.pkl
+GBM/src/network.inference.2019.04.30/miner/src/__init__.py
+GBM/src/network.inference.2019.04.30/miner/src/miner.py
+*.R
+GBM/src/network.inference.2019.04.30/.ipynb_checkpoints/GBM.notebook-checkpoint.ipynb
+*.pyc
+GBM/src/network.inference.2019.04.30/miner/src/miner_demo.ipynb
+GBM/src/network.inference.2019.04.30/miner/src/miner_demo_20190425.ipynb
+GBM/src/network.inference.2019.04.30/miner/src/miner_stable.ipynb
+GBM/src/network.inference.2019.04.30/miner/src/miner_updated_stable_code.ipynb
+GBM/src/network.inference.2019.04.30/miner/src/minerAnalysis.ipynb
+GBM/src/network.inference.2019.04.30/miner/src/.ipynb_checkpoints/ALO.GBM.notebook-checkpoint.ipynb
