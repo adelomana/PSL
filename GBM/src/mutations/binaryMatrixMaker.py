@@ -34,8 +34,8 @@ def TCGAfileReader(path,mutationTypes):
     return mutationSet,mutationTypes,patientLabel
 
 # 0. user defined variables
-TCGAfolder='/Volumes/omics4tb2/alomana/projects/PSL/GBM/data/gdac.broadinstitute.org_GBM.Mutation_Packager_Calls.Level_3.2016012800.0.0/'
-resultsFile='/Volumes/omics4tb2/alomana/projects/PSL/GBM/data/mutations/mutations.GBM.TCGA.2019.04.30.csv'
+TCGAfolder='/Volumes/omics4tb2/alomana/projects/PSL/GBM/data/mutations/gdac.broadinstitute.org_GBM.Mutation_Packager_Calls.Level_3.2016012800.0.0/'
+resultsFile='/Volumes/omics4tb2/alomana/projects/PSL/GBM/results/mutations/mutations.GBM.TCGA.2019.04.30.csv'
 
 # 1. read data and create list of tuples with mutations
 # mutations=[(patient,gene), (), ...]
