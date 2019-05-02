@@ -133,6 +133,9 @@ with open(arrayDataFile,'r') as f:
     v=headerLine.split('\t')
     sampleIDs=v[1:]
     sampleIDs[-1]=sampleIDs[-1].replace('\n','')
+
+    # dealing with patient IDs from TCGA https://docs.gdc.cancer.gov/Encyclopedia/pages/TCGA_Barcode/
+    patientIDs=['-'.join(element.split('-')[:3]) for element in sampleIDs]
     
     next(f)
 
@@ -146,11 +149,11 @@ with open(arrayDataFile,'r') as f:
         rowExpression=[float(element) for element in v[1:]]
 
         # create dictionary
-        for i in range(len(sampleIDs)):
-            if sampleIDs[i] not in arrayExpression.keys():
-                arrayExpression[sampleIDs[i]]={}
+        for i in range(len(patientIDs)):
+            if patientIDs[i] not in arrayExpression.keys():
+                arrayExpression[patientIDs[i]]={}
 
-            arrayExpression[sampleIDs[i]][geneName]=rowExpression[i]
+            arrayExpression[patientIDs[i]][geneName]=rowExpression[i]
 
 # 1.2. read RNAseq data
 rnaseqGenes=[]
@@ -161,6 +164,9 @@ with open(rnaseqDataFile,'r') as f:
     sampleIDs=v[1:]
     sampleIDs[-1]=sampleIDs[-1].replace('\n','')
 
+    # dealing with patient IDs from TCGA https://docs.gdc.cancer.gov/Encyclopedia/pages/TCGA_Barcode/
+    patientIDs=['-'.join(element.split('-')[:3]) for element in sampleIDs]
+
     for line in f:
         v=line.split('\t')
         geneName=v[0].split('|')[0]
@@ -170,11 +176,11 @@ with open(rnaseqDataFile,'r') as f:
         log2plusOne=[numpy.log2(element+1) for element in rowExpression]
         
         # create dictionary
-        for i in range(len(sampleIDs)):
-            if sampleIDs[i] not in rnaseqExpression.keys():
-                rnaseqExpression[sampleIDs[i]]={}
+        for i in range(len(patientIDs)):
+            if patientIDs[i] not in rnaseqExpression.keys():
+                rnaseqExpression[patientIDs[i]]={}
 
-            rnaseqExpression[sampleIDs[i]][geneName]=log2plusOne[i]
+            rnaseqExpression[patientIDs[i]][geneName]=log2plusOne[i]
 
 # 1.3. find common intersect
 commonGenes=list(set(arrayGenes) & set(rnaseqGenes))
@@ -297,7 +303,7 @@ matplotlib.pyplot.savefig(resultsFolder+'figure.expression.sklearn.pdf')
 matplotlib.pyplot.clf()
 
 # 4. store data into csv
-print('storing...')
+print('Store CSV files...')
 
 # 3.1. store original data sets
 # store MA
@@ -340,7 +346,6 @@ with open(fileName,'w') as f:
         
         f.write('\n')
 
-
 # 3.2. store QN data sets
 # store MA
 sampleNames=list(QNMA.keys())
@@ -381,5 +386,3 @@ with open(fileName,'w') as f:
             f.write(',{}'.format(QNRS[sampleName][geneName]))
         
         f.write('\n')
-        
-# store RS sklearn

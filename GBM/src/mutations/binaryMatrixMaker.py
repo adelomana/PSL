@@ -12,8 +12,7 @@ def TCGAfileReader(path,mutationTypes):
 
     mutationSet=[]
 
-    patientLabel=path.split('/')[-1].split('.maf')[0]
-    #print('\t working with {}'.format(patientLabel))
+    patientLabel='-'.join(path.split('/')[-1].split('-')[:3])
     
     with open(path,'r') as f:
         next(f)
@@ -35,7 +34,8 @@ def TCGAfileReader(path,mutationTypes):
 
 # 0. user defined variables
 TCGAfolder='/Volumes/omics4tb2/alomana/projects/PSL/GBM/data/mutations/gdac.broadinstitute.org_GBM.Mutation_Packager_Calls.Level_3.2016012800.0.0/'
-resultsFile='/Volumes/omics4tb2/alomana/projects/PSL/GBM/results/mutations/mutations.GBM.TCGA.2019.04.30.csv'
+resultsFile='/Volumes/omics4tb2/alomana/projects/PSL/GBM/results/mutations/mutations.GBM.TCGA.2019.05.01.csv'
+expressionDataFile='/Volumes/omics4tb2/alomana/projects/PSL/GBM/results/normalization/QN.MA.data.csv'
 
 # 1. read data and create list of tuples with mutations
 # mutations=[(patient,gene), (), ...]
@@ -45,9 +45,24 @@ mutations=[]
 mutationTypes=[]
 patientLabels=[]
 
+# 1.1. determine mutation patient files
 detectedFiles=os.listdir(TCGAfolder)
-patientFiles=[element for element in detectedFiles if 'TCGA' in element and '._TCGA' not in element]
+allPatientFiles=[element for element in detectedFiles if 'TCGA' in element and '._TCGA' not in element]
 
+# 1.2. drop patients for which no expression data is available
+with open(expressionDataFile,'r') as f:
+    line=f.readline()
+    v=line.split(',')
+    expressionPatientIDs=v[1:]
+    expressionPatientIDs[-1]=expressionPatientIDs[-1].replace('\n','')
+
+patientFiles=[]
+for putative in allPatientFiles:
+    ID='-'.join(putative.split('-')[:3])
+    if ID in expressionPatientIDs:
+        patientFiles.append(putative)
+
+# 1.3. read info in mutation patient files
 for patientFile in patientFiles:
     path=TCGAfolder+patientFile
     mutationSet,mutationTypes,patientLabel=TCGAfileReader(path,mutationTypes)
@@ -67,11 +82,13 @@ for item in mutations:
                 mutatedGenes[item[1]]=1
 
 mutatedGeneList=[k for k in sorted(mutatedGenes, key=mutatedGenes.get, reverse=True)]
+mutatedGeneList=[element for element in mutatedGeneList if mutatedGenes[element] >= 3] # the mutation needs to be present in at least 3 patients to be considered
 mutatedGeneList.remove('Unknown')
-for geneLabel in mutatedGeneList[:5]:
-    print(geneLabel,mutatedGenes[geneLabel])
 
-# 2. create binary csv file
+for i in range(len(mutatedGeneList)):
+    print(i,mutatedGeneList[i],mutatedGenes[mutatedGeneList[i]])
+
+# 3. create binary csv file
 print('Store binary csv file...')
 with open(resultsFile,'w') as f:
 
